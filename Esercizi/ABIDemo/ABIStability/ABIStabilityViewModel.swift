@@ -79,10 +79,27 @@ final class ABIStabilityViewModel {
     var shapeSize: Double = 10.0
 
     /// Punto corrente per la demo @frozen struct.
-    var point: StablePoint = StablePoint(x: 3.0, y: 4.0)
+    ///
+    /// `StablePoint` ha proprietà `let` (frozen layout immutabile):
+    /// non è possibile ottenere un `Binding<Double>` direttamente su `point.x`.
+    /// Esponiamo quattro proprietà proxy `var` che ricostruiscono il `StablePoint`
+    /// ad ogni modifica — pattern corretto con tipi @frozen immutabili in SwiftUI.
+    var point: StablePoint { StablePoint(x: pointX, y: pointY) }
+
+    /// Coordinata X del primo punto — mutabile, usata come binding per lo Slider.
+    var pointX: Double = 3.0
+
+    /// Coordinata Y del primo punto — mutabile, usata come binding per lo Slider.
+    var pointY: Double = 4.0
 
     /// Secondo punto da sommare al primo.
-    var secondPoint: StablePoint = StablePoint(x: 1.0, y: 1.0)
+    var secondPoint: StablePoint { StablePoint(x: secondPointX, y: secondPointY) }
+
+    /// Coordinata X del secondo punto — mutabile, usata come binding per lo Slider.
+    var secondPointX: Double = 1.0
+
+    /// Coordinata Y del secondo punto — mutabile, usata come binding per lo Slider.
+    var secondPointY: Double = 1.0
 
     // MARK: Valori calcolati (derivati dallo stato)
 
@@ -182,4 +199,3 @@ final class ABIStabilityViewModel {
         }
     }
 }
- 
