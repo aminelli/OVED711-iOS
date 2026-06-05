@@ -2,7 +2,7 @@
 //  ContentView.swift
 //  AppDemo
 //
-//  Created by Antonio Minelli.
+//  Created by Antonio Minelli on 05/06/2026.
 //
 //  Vista principale della demo ABI Stability.
 //  Struttura: NavigationSplitView con lista sezioni (sidebar) e
@@ -39,13 +39,29 @@ struct ContentView: View {
 /// Lista delle sezioni didattiche nella sidebar.
 private struct SectionListView: View {
 
-    @Bindable var viewModel: ABIStabilityViewModel
+    // @Bindable non è più necessario: la mutazione avviene via Button,
+    // non tramite binding diretto su List. Usiamo il tipo osservabile direttamente.
+    var viewModel: ABIStabilityViewModel
 
     var body: some View {
-        List(DemoSection.allCases, selection: $viewModel.selectedSection) { section in
-            Label(section.rawValue, systemImage: section.iconName)
-                .foregroundStyle(section.tintColor)
-                .tag(section)
+        // In iOS 26 le API List(selection:) sono state rimosse.
+        // Il pattern corretto è usare List semplice con Button per aggiornare
+        // la selezione nel ViewModel, e listRowBackground per evidenziare la riga attiva.
+        List {
+            ForEach(DemoSection.allCases) { section in
+                Button {
+                    viewModel.selectedSection = section
+                } label: {
+                    Label(section.rawValue, systemImage: section.iconName)
+                        .foregroundStyle(section.tintColor)
+                }
+                // Sfondo tinted sulla riga della sezione selezionata
+                .listRowBackground(
+                    viewModel.selectedSection == section
+                        ? section.tintColor.opacity(0.15)
+                        : Color.clear
+                )
+            }
         }
         .listStyle(.sidebar)
     }
@@ -219,16 +235,16 @@ private struct FrozenStructSection: View {
                 GroupBox("Punto P1 (StablePoint @frozen)") {
                     VStack(spacing: 8) {
                         // Slider per X e Y del primo punto
-                        CoordinateSlider(label: "X", value: $viewModel.point.x)
-                        CoordinateSlider(label: "Y", value: $viewModel.point.y)
+                        CoordinateSlider(label: "X", value: $viewModel.pointX)
+                        CoordinateSlider(label: "Y", value: $viewModel.pointY)
                         CodeLabel(text: viewModel.distanceText)
                     }
                 }
 
                 GroupBox("Somma vettoriale P1 + P2") {
                     VStack(spacing: 8) {
-                        CoordinateSlider(label: "P2.X", value: $viewModel.secondPoint.x)
-                        CoordinateSlider(label: "P2.Y", value: $viewModel.secondPoint.y)
+                        CoordinateSlider(label: "P2.X", value: $viewModel.secondPointX)
+                        CoordinateSlider(label: "P2.Y", value: $viewModel.secondPointY)
                         CodeLabel(text: viewModel.sumPointText)
                     }
                 }
