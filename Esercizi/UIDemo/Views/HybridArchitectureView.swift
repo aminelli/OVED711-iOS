@@ -169,7 +169,11 @@ struct HybridArchitectureView: View {
                 .foregroundStyle(AppTheme.Colors.textSecondary)
 
             // Anteprima della SwiftUI View che verrebbe ospitata in UIKit
-            SwiftUIGuestView()
+            /*SwiftUIGuestView()
+                .frame(height: 120)
+                .clipShape(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.large))
+             */
+            ContainerRapresentable()
                 .frame(height: 120)
                 .clipShape(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.large))
         }
@@ -257,6 +261,7 @@ private enum HybridSection: Equatable {
 
 // MARK: - SwiftUIGuestView
 
+/*
 /// View SwiftUI di esempio che verrebbe ospitata in un UIHostingController.
 private struct SwiftUIGuestView: View {
     @State private var count = 0
@@ -287,7 +292,7 @@ private struct SwiftUIGuestView: View {
         .padding(AppTheme.Spacing.md)
         .background(AppTheme.Colors.primary.opacity(0.08))
     }
-}
+}*/
 
 // MARK: - ItemDetailSheet
 
@@ -342,3 +347,4 @@ private struct ItemDetailSheet: View {
     }
     .environment(AppState())
 }
+ 
